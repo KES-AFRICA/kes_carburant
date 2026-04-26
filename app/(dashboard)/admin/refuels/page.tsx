@@ -535,14 +535,14 @@ export default function AdminRefuelsPage() {
                           <Eye size={18} />
                         </button>
                       </Tooltip>
-                      <Tooltip text="Supprimer">
+                      {/* <Tooltip text="Supprimer">
                         <button
                           onClick={() => handleDeleteClick(refuel.id, `${refuel.vehiculeName} - ${formatDate(refuel.dateHeure)}`)}
                           className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition cursor-pointer"
                         >
                           <Trash2 size={18} />
                         </button>
-                      </Tooltip>
+                      </Tooltip> */}
                     </div>
                   </div>
                 </div>
