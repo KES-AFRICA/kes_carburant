@@ -1,23 +1,26 @@
 version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
     container_name: kes_carburant_mysql
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: kes_carburant
-      MYSQL_USER: kes_user
-      MYSQL_PASSWORD: kes_password
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
       - kes_network
     command: --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       timeout: 20s
       retries: 10
 
@@ -25,13 +28,15 @@ services:
     image: minio/minio:latest
     container_name: kes_carburant_minio
     restart: unless-stopped
+    env_file:
+      - .env
     command: server /data --console-address ":9001"
     environment:
-      MINIO_ROOT_USER: kes_minio
-      MINIO_ROOT_PASSWORD: kes_minio_123
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9100:9000"
+      - "9101:9001"
     volumes:
       - minio_data:/data
     networks:
@@ -48,9 +53,9 @@ services:
     container_name: kes_carburant_frontend
     restart: unless-stopped
     env_file:
-      - .env          # ← chemin vers ton .env
+      - .env
     ports:
-      - "3000:3000"
+      - "3009:3000"
     networks:
       - kes_network
     depends_on:

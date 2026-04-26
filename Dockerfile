@@ -41,7 +41,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/prisma           ./prisma
 
 USER nextjs
 EXPOSE 3000
-ENV PORT=3000
+ENV PORT=3009
 ENV HOSTNAME="0.0.0.0"
 
 CMD ["node", "server.js"]
