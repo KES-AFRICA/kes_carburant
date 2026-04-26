@@ -97,6 +97,7 @@ export default function DashboardLayout({
     { href: '/admin/refuels', label: 'Recharges', icon: <Fuel size={20} /> },
     { href: '/admin/vehicles', label: 'Véhicules', icon: <Car size={20} /> },
     { href: '/admin/assignments', label: 'Assignations', icon: <ClipboardList size={20} /> },
+    { href: '/admin/profile', label: 'Mon profil', icon: <UserCircle size={20} /> },
   ] : [
     { href: '/user/dashboard', label: 'Dashboard', icon: <Gauge size={20} /> },
     { href: '/user/refuels', label: 'Mes recharges', icon: <Fuel size={20} /> },
