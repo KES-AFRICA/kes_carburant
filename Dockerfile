@@ -16,7 +16,6 @@ RUN npm run build
 # ── Étape 3 : image de production ────────────────────────────────────────
 FROM node:20-alpine AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -30,9 +29,13 @@ COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
 COPY --from=builder --chown=nextjs:nodejs /app/generated        ./generated
 COPY --from=builder --chown=nextjs:nodejs /app/prisma           ./prisma
 
-# ← COPIER node_modules ENTIERS du builder (pour prisma migrate deploy)
+# node_modules complets pour prisma migrate deploy
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules     ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json     ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+
+# .env sur disque pour que dotenv/config fonctionne
+COPY --from=builder --chown=nextjs:nodejs /app/.env             ./.env
 
 # Entrypoint
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
