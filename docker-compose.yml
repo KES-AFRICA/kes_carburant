@@ -1,0 +1,68 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kes_carburant_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: kes_carburant
+      MYSQL_USER: kes_user
+      MYSQL_PASSWORD: kes_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - kes_network
+    command: --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      timeout: 20s
+      retries: 10
+
+  minio:
+    image: minio/minio:latest
+    container_name: kes_carburant_minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: kes_minio
+      MINIO_ROOT_PASSWORD: kes_minio_123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - kes_network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 20s
+      retries: 10
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: kes_carburant_frontend
+    restart: unless-stopped
+    env_file:
+      - .env          # ← chemin vers ton .env
+    ports:
+      - "3000:3000"
+    networks:
+      - kes_network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
+  minio_data:
+
+networks:
+  kes_network:
+    driver: bridge

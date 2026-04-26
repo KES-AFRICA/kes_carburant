@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Créer le projet Next.js 16
+npx create-next-app@latest kes_carburant --typescript --tailwind --app --no-src-dir --import-alias "@/*"
 
-## Getting Started
+# Entrer dans le projet
+cd kes_carburant
 
-First, run the development server:
+# Supprimer les fichiers inutiles
+rm -rf public/next.svg public/vercel.svg app/favicon.ico app/globals.css app/page.module.css
 
-```bash
+# Installer Prisma 7
+npm install prisma @prisma/client
+
+# Installer l'authentification
+npm install bcryptjs jsonwebtoken
+npm install -D @types/bcryptjs @types/jsonwebtoken
+
+# Installer MinIO
+npm install minio sharp
+npm install -D @types/sharp
+
+# Installer PWA (Workbox)
+npm install workbox-webpack-plugin
+npm install -D @types/node
+
+# Installer offline storage
+npm install idb
+
+# Installer formulaires
+npm install react-hook-form zod @hookform/resolvers
+
+# Installer graphiques
+npm install recharts
+
+# Installer utilitaires
+npm install react-hot-toast date-fns
+
+# TSX est un exécuteur TypeScript pour Node.js.
+npm install -D tsx
+
+# Initialiser Prisma
+npx prisma init
+
+# Démarrer MySQL et MinIO
+docker compose up -d
+
+# Générer Prisma client
+npx prisma generate
+npx prisma migrate dev --name init
+npm run db:seed
+
+# Démarrer l'application
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+npm install sharp
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+admin@kescarburant.com
+admin123

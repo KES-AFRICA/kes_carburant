@@ -1,0 +1,182 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum TypeCarburant {
+  ESSENCE
+  DIESEL
+  GASOIL
+  ELECTRIQUE
+  HYBRIDE
+}
+
+enum StatutVehicule {
+  ACTIF
+  ARCHIVE
+}
+
+enum TypeMedia {
+  VEHICULE
+  TABLEAU_BORD
+  POMPE
+}
+
+enum StatutSync {
+  SYNCHRONISE
+  EN_ATTENTE
+}
+
+enum RoleNom {
+  ADMIN
+  USER
+}
+
+model Utilisateur {
+  id                Int                  @id @default(autoincrement())
+  nom               String
+  prenom            String
+  email             String               @unique(map: "uk_utilisateurs_email")
+  motDePasse        String               @map("mot_de_passe")
+  roleId            Int                  @map("role_id")
+  telephone         String?
+  actif             Boolean              @default(true)
+  derniereConnexion DateTime?            @map("derniere_connexion")
+  createdAt         DateTime             @default(now()) @map("created_at")
+  updatedAt         DateTime             @updatedAt @map("updated_at")
+
+  role              Role                 @relation(fields: [roleId], references: [id])
+  recharges         Recharge[]
+  vehicules         VehiculeUtilisateur[]
+  syncFiles         FileSync[]
+
+  @@map("utilisateurs")
+}
+
+model Role {
+  id           Int          @id @default(autoincrement())
+  nom          RoleNom      @unique(map: "uk_roles_nom")
+  description  String?
+  utilisateurs Utilisateur[]
+
+  @@map("roles")
+}
+
+model Vehicule {
+  id                    Int                  @id @default(autoincrement())
+  immatriculation       String               @unique(map: "uk_vehicules_immatriculation")
+  marque                String
+  modele                String
+  annee                 Int
+  typeCarburant         TypeCarburant        @map("type_carburant")
+  consommationTheorique Float?               @map("consommation_theorique")
+  capaciteReservoir     Float?               @map("capacite_reservoir")
+  photoUrl              String?              @map("photo_url")
+  statut                StatutVehicule       @default(ACTIF)
+  createdAt             DateTime             @default(now()) @map("created_at")
+  updatedAt             DateTime             @updatedAt @map("updated_at")
+
+  utilisateurs          VehiculeUtilisateur[]
+  recharges             Recharge[]
+
+  @@map("vehicules")
+}
+
+model VehiculeUtilisateur {
+  vehiculeId    Int        @map("vehicule_id")
+  utilisateurId Int        @map("utilisateur_id")
+  assignedAt    DateTime   @default(now()) @map("assigned_at")
+
+  vehicule      Vehicule   @relation(fields: [vehiculeId], references: [id])
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@id([vehiculeId, utilisateurId])
+  @@map("vehicules_utilisateurs")
+}
+
+model Lieu {
+  id              Int         @id @default(autoincrement())
+  nom             String?
+  latitude        Float
+  longitude       Float
+  adresseComplete String?     @map("adresse_complete")
+  ville           String?
+  codePostal      String?     @map("code_postal")
+  pays            String?     @default("France")
+
+  recharges       Recharge[]
+
+  @@map("lieux")
+}
+
+model Recharge {
+  id                Int           @id @default(autoincrement())
+  vehiculeId        Int           @map("vehicule_id")
+  utilisateurId     Int           @map("utilisateur_id")
+  lieuId            Int?          @map("lieu_id")
+  dateHeure         DateTime      @map("date_heure")
+  quantiteLitres    Float         @map("quantite_litres")
+  montant           Float
+  prixUnitaire      Float         @map("prix_unitaire")
+  kmActuel          Float         @map("km_actuel")
+  kmPrecedent       Float?        @map("km_precedent")
+  distanceParcourue Float?        @map("distance_parcourue")
+  consoCalculee     Float?        @map("conso_calculee")
+  ecartConstructeur Float?        @map("ecart_constructeur")
+  coutAuKm          Float?        @map("cout_au_km")
+  pleinComplet      Boolean       @default(true) @map("plein_complet")
+  notes             String?
+  statutSync        StatutSync    @default(SYNCHRONISE) @map("statut_sync")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  vehicule          Vehicule      @relation(fields: [vehiculeId], references: [id])
+  utilisateur       Utilisateur   @relation(fields: [utilisateurId], references: [id])
+  lieu              Lieu?         @relation(fields: [lieuId], references: [id])
+  medias            Media[]
+
+  @@index([vehiculeId])
+  @@index([utilisateurId])
+  @@index([dateHeure])
+  @@index([statutSync])
+  @@map("recharges")
+}
+
+model Media {
+  id          Int       @id @default(autoincrement())
+  rechargeId  Int       @map("recharge_id")
+  type        TypeMedia
+  url         String
+  bucket      String
+  key         String
+  taille      Int?
+  mimeType    String?   @map("mime_type")
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  recharge    Recharge  @relation(fields: [rechargeId], references: [id])
+
+  @@index([rechargeId])
+  @@map("medias")
+}
+
+model FileSync {
+  id            Int       @id @default(autoincrement())
+  utilisateurId Int       @map("utilisateur_id")
+  payload       Json
+  action        String
+  entityId      Int?      @map("entity_id")
+  retryCount    Int       @default(0) @map("retry_count")
+  error         String?
+  createdAt     DateTime  @default(now()) @map("created_at")
+  synchroniseLe DateTime? @map("synchronise_le")
+
+  utilisateur   Utilisateur @relation(fields: [utilisateurId], references: [id])
+
+  @@index([utilisateurId])
+  @@index([synchroniseLe])
+  @@map("file_sync")
+}
