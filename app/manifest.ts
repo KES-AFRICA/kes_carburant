@@ -4,7 +4,7 @@ import type { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'KES Carburant',
-    short_name: 'KES',
+    short_name: 'KES Carburant',
     description: 'Application de suivi de consommation carburant',
     start_url: '/',
     display: 'standalone',
