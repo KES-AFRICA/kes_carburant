@@ -32,16 +32,22 @@ RUN addgroup --system --gid 1001 nodejs \
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static     ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
-
-# Client Prisma généré (dans generated/ à la racine)
 COPY --from=builder --chown=nextjs:nodejs /app/generated        ./generated
-
-# Schéma Prisma (nécessaire au runtime pour certaines opérations)
 COPY --from=builder --chown=nextjs:nodejs /app/prisma           ./prisma
+
+# ← AJOUTER CES DEUX LIGNES
+COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x ./docker-entrypoint.sh
+
+# Prisma CLI nécessaire pour migrate deploy au runtime
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma        ./node_modules/.bin/prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma            ./node_modules/@prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma             ./node_modules/prisma
 
 USER nextjs
 EXPOSE 3000
 ENV PORT=3009
 ENV HOSTNAME="0.0.0.0"
 
-CMD ["node", "server.js"]
+# ← REMPLACER CMD
+CMD ["./docker-entrypoint.sh"]

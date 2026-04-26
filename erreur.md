@@ -1,6 +1,8 @@
 # Se connecter au MySQL dans le conteneur
 docker exec -it kes_carburant_mysql mysql -u kes_user -pkes_password
 
+docker exec -it kes_carburant_frontend npx prisma migrate dev
+
 
 npx prisma migrate dev --name init
 Loaded Prisma config from prisma.config.ts.
