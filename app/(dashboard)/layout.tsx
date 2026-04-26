@@ -108,7 +108,7 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
-      {/* Reste du layout... */}
+      
       {sidebarOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-40 md:hidden"

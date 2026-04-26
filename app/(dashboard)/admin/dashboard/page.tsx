@@ -6,8 +6,6 @@ import { useStatistics } from "@/lib/hooks/useStatistics";
 import { useAdminRefuels } from "@/lib/hooks/useAdminRefuels";
 import { useEffect, useState, useMemo } from "react";
 import {
-  LineChart,
-  Line,
   BarChart,
   Bar,
   XAxis,
@@ -262,10 +260,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // Données pour les graphiques avec adaptation mobile
-  const chartMargin = isMobile ? { top: 5, right: 10, left: 0, bottom: 5 } : { top: 10, right: 30, left: 0, bottom: 10 };
-  const barMargin = isMobile ? { top: 5, right: 10, left: 40, bottom: 60 } : { top: 10, right: 30, left: 50, bottom: 30 };
-
   if (loading || refuelsLoading || loadingUsers) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -331,7 +325,7 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="space-y-4 sm:space-y-6 px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <div className="space-y-4 sm:space-y-6">
         
         {/* Header avec filtres */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -528,7 +522,7 @@ export default function AdminDashboardPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
 {/* Graphique: Top utilisateurs - Recharges */}
-<div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+<div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
   <div className="flex items-center gap-2 mb-3 sm:mb-4">
     <BarChart3 size={isMobile ? 16 : 18} className="text-emerald-600" />
     <h2 className="text-sm sm:text-base font-semibold text-gray-900">Top utilisateurs - Recharges</h2>
@@ -537,7 +531,7 @@ export default function AdminDashboardPage() {
   <ResponsiveContainer width="100%" height={350}>
     <BarChart 
       data={refuelsByUserData} 
-      margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 60 } : { top: 10, right: 30, left: 0, bottom: 60 }}
+     margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
       <XAxis 
@@ -579,11 +573,11 @@ export default function AdminDashboardPage() {
 </div>
 
 {/* Graphique: Consommation par véhicule */}
-<div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+<div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
   <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">Consommation par véhicule</h2>
   <p className="text-xs text-gray-400 mb-3 sm:mb-4">L/100km - Moyenne par véhicule</p>
   <ResponsiveContainer width="100%" height={350}>
-    <BarChart data={consumptionData} margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 60 } : { top: 10, right: 30, left: 0, bottom: 60 }}>
+    <BarChart data={consumptionData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
       <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
       <XAxis 
         dataKey="vehiculeName" 
@@ -619,15 +613,17 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Graphique: Dépenses mensuelles */}
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
-          <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">Dépenses mensuelles</h2>
+
+
+        <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
+         <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">Dépenses mensuelles</h2>
           <p className="text-xs text-gray-400 mb-3 sm:mb-4">Évolution des dépenses et volumes</p>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={monthlyExpenses} margin={chartMargin}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+            <BarChart data={monthlyExpenses} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" />
               <XAxis 
                 dataKey="mois" 
-                tick={{ fontSize: isMobile ? 9 : 12, fill: '#6B7280' }}
+                tick={{ fontSize: isMobile ? 9 : 11 }} 
                 interval={isMobile ? 1 : 0}
                 angle={isMobile ? -25 : 0}
                 textAnchor={isMobile ? "end" : "middle"}
@@ -636,42 +632,44 @@ export default function AdminDashboardPage() {
               <YAxis 
                 yAxisId="left" 
                 tickFormatter={(v) => isMobile ? `${Math.round(v/1000)}k` : `${Math.round(v/1000)}k`}
-                tick={{ fontSize: isMobile ? 9 : 12, fill: '#6B7280' }}
-                width={isMobile ? 45 : 60}
+                tick={{ fontSize: 10 }}
+                width={isMobile ? 40 : 60}
               />
               {!isMobile && (
-                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 12, fill: '#6B7280' }} width={40} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} width={40} />
               )}
-              <Tooltip content={<CustomTooltip />} />
-              <Legend wrapperStyle={{ fontSize: isMobile ? 10 : 12 }} />
-              <Line 
+              <Tooltip 
+                formatter={(value, name) => {
+                  if (name === 'montant') return [formatFCFA(value as number), 'Montant'];
+                  if (name === 'litres') return [`${value} L`, 'Litres'];
+                  return [value, name];
+                }}
+                contentStyle={{ fontSize: 11 }}
+              />
+              <Legend wrapperStyle={{ fontSize: 11, paddingTop: 10 }} />
+              <Bar 
                 yAxisId="left" 
-                type="monotone" 
                 dataKey="montant" 
-                stroke="#3B82F6" 
+                fill="#3B82F6" 
                 name="Montant" 
-                strokeWidth={2}
-                dot={{ r: isMobile ? 3 : 4, fill: '#3B82F6' }}
-                activeDot={{ r: isMobile ? 4 : 6 }}
+                radius={[4, 4, 0, 0]}
               />
               {!isMobile && (
-                <Line 
+                <Bar 
                   yAxisId="right" 
-                  type="monotone" 
                   dataKey="litres" 
-                  stroke="#10B981" 
+                  fill="#10B981" 
                   name="Litres" 
-                  strokeWidth={2}
-                  dot={{ r: 4, fill: '#10B981' }}
+                  radius={[4, 4, 0, 0]}
                 />
               )}
-            </LineChart>
+            </BarChart>
           </ResponsiveContainer>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* Graphique: Évolution des consommations */}
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+          <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
             <h2 className="text-sm sm:text-base font-semibold text-gray-900 mb-3 sm:mb-4">Évolution des consommations</h2>
             <p className="text-xs text-gray-400 mb-3 sm:mb-4">Tendance L/100km dans le temps</p>
             {filteredEvolutionData.length === 0 ? (
@@ -680,7 +678,7 @@ export default function AdminDashboardPage() {
               </div>
             ) : (
               <ResponsiveContainer width="100%" height={300}>
-                <AreaChart data={filteredEvolutionData} margin={chartMargin}>
+                <AreaChart data={filteredEvolutionData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis 
                     dataKey="date" 
@@ -711,14 +709,14 @@ export default function AdminDashboardPage() {
           </div>
 
           {/* Graphique: Consommation moyenne par utilisateur - version responsive */}
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+          <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <Users size={isMobile ? 16 : 18} className="text-indigo-600" />
               <h2 className="text-sm sm:text-base font-semibold text-gray-900">Consommation par utilisateur</h2>
             </div>
             <p className="text-xs text-gray-400 mb-3 sm:mb-4">L/100km - Moyenne par utilisateur</p>
             <ResponsiveContainer width="100%" height={350}>
-              <BarChart data={consumptionByUser} margin={isMobile ? { top: 5, right: 10, left: 0, bottom: 80 } : { top: 10, right: 30, left: 0, bottom: 60 }}>
+              <BarChart data={consumptionByUser} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                 <XAxis 
                   dataKey="prenom" 
@@ -913,7 +911,7 @@ export default function AdminDashboardPage() {
 
         {/* Alertes - responsive */}
         {alerts.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+          <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
             <div className="flex items-center gap-2 mb-3 sm:mb-4">
               <AlertTriangle size={isMobile ? 16 : 18} className="text-red-500" />
               <h2 className="text-sm sm:text-base font-semibold text-gray-900">Alertes consommation anormale</h2>

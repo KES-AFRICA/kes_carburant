@@ -147,18 +147,18 @@ export default function UserProfilePage() {
         {/* Carte informations personnelles */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
+            <div className="px-3 md:px-6 py-4 border-b border-gray-100 bg-linear-to-r from-blue-50 to-white">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="p-1.5 bg-blue-100 rounded-lg">
                     <User size={18} className="text-blue-600" />
                   </div>
-                  <h2 className="text-base font-semibold text-gray-900">Informations personnelles</h2>
+                  <h2 className="text-xs md:text-base font-semibold text-gray-900">Informations personnelles</h2>
                 </div>
                 {!isEditing && (
                   <button
                     onClick={handleEditClick}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs md:text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
                   >
                     <Edit2 size={14} />
                     Modifier
@@ -167,7 +167,7 @@ export default function UserProfilePage() {
               </div>
             </div>
 
-            <div className="p-6">
+            <div className="p-3 md:p-6">
               {isEditing ? (
                 <form onSubmit={handleUpdateProfile} className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -246,14 +246,14 @@ export default function UserProfilePage() {
                       <User size={18} className="text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Nom complet</p>
-                        <p className="text-base font-medium text-gray-900">{profile?.prenom} {profile?.nom}</p>
+                        <p className="text-xs md:text-base font-medium text-gray-900">{profile?.prenom} {profile?.nom}</p>
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
                       <Mail size={18} className="text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Email</p>
-                        <p className="text-base font-medium text-gray-900">{profile?.email}</p>
+                        <p className="text-xs md:text-base font-medium text-gray-900">{profile?.email}</p>
                       </div>
                     </div>
                   </div>
@@ -261,7 +261,7 @@ export default function UserProfilePage() {
                     <Phone size={18} className="text-gray-400 mt-0.5" />
                     <div>
                       <p className="text-xs text-gray-400 uppercase tracking-wide">Téléphone</p>
-                      <p className="text-base font-medium text-gray-900">{profile?.telephone || "Non renseigné"}</p>
+                      <p className="text-xs md:text-base font-medium text-gray-900">{profile?.telephone || "Non renseigné"}</p>
                     </div>
                   </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -269,7 +269,7 @@ export default function UserProfilePage() {
                       <Shield size={18} className="text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Rôle</p>
-                        <p className="text-base font-medium text-gray-900">
+                        <p className="text-xs md:text-base font-medium text-gray-900">
                           {profile?.role === "ADMIN" ? "Administrateur" : "Utilisateur"}
                         </p>
                       </div>
@@ -278,7 +278,7 @@ export default function UserProfilePage() {
                       <Calendar size={18} className="text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Membre depuis</p>
-                        <p className="text-base font-medium text-gray-900">
+                        <p className="text-xs md:text-base font-medium text-gray-900">
                           {profile?.createdAt ? formatDate(profile.createdAt) : "-"}
                         </p>
                       </div>
@@ -289,7 +289,7 @@ export default function UserProfilePage() {
                       <LogIn size={18} className="text-gray-400 mt-0.5" />
                       <div>
                         <p className="text-xs text-gray-400 uppercase tracking-wide">Dernière connexion</p>
-                        <p className="text-base font-medium text-gray-900">{formatDateTime(profile.derniereConnexion)}</p>
+                        <p className="text-xs md:text-base font-medium text-gray-900">{formatDateTime(profile.derniereConnexion)}</p>
                       </div>
                     </div>
                   )}
@@ -302,7 +302,7 @@ export default function UserProfilePage() {
         {/* Carte changement mot de passe */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-orange-50 to-white">
+            <div className="px-6 py-4 border-b border-gray-100 bg-linear-to-r from-orange-50 to-white">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-orange-100 rounded-lg">
                   <Lock size={18} className="text-orange-600" />

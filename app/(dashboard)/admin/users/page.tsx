@@ -246,7 +246,7 @@ export default function AdminUsersPage() {
               <div className="p-5 pb-3 border-b border-gray-100">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-gradient-to-br from-blue-100 to-blue-200 rounded-full">
+                    <div className="p-2 bg-linear-to-br from-blue-100 to-blue-200 rounded-full">
                       <UserIcon size={24} className="text-blue-600" />
                     </div>
                     <div>
@@ -295,17 +295,17 @@ export default function AdminUsersPage() {
               {/* Infos utilisateur */}
               <div className="p-5 space-y-3">
                 <div className="flex items-center gap-2 text-sm">
-                  <Mail size={14} className="text-gray-400 flex-shrink-0" />
+                  <Mail size={14} className="text-gray-400 shrink-0" />
                   <span className="text-gray-600 truncate">{user.email}</span>
                 </div>
                 {user.telephone && (
                   <div className="flex items-center gap-2 text-sm">
-                    <Phone size={14} className="text-gray-400 flex-shrink-0" />
+                    <Phone size={14} className="text-gray-400 shrink-0" />
                     <span className="text-gray-600">{user.telephone}</span>
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-sm">
-                  <Calendar size={14} className="text-gray-400 flex-shrink-0" />
+                  <Calendar size={14} className="text-gray-400 shrink-0" />
                   <span className="text-gray-500 text-xs">
                     Dernière connexion: {formatDate(user.derniereConnexion)}
                   </span>

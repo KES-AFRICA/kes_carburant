@@ -75,7 +75,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="space-y-4 sm:space-y-6 px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+      <div className="space-y-4 sm:space-y-6">
         
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -104,7 +104,7 @@ export default function DashboardPage() {
         </div>
  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Graphique 1: Dépenses mensuelles */}
-<div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+<div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
   <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">
     Dépenses mensuelles
   </h2>
@@ -158,7 +158,7 @@ export default function DashboardPage() {
 </div>
 
         {/* Graphique 2: Évolution des consommations */}
-        <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+        <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-2">
             <h2 className="text-base sm:text-lg font-semibold text-gray-900">
               Évolution des consommations
@@ -207,7 +207,7 @@ export default function DashboardPage() {
  </div>
         {/* Alertes */}
         {alerts.length > 0 && (
-          <div className="bg-white rounded-lg shadow-sm p-4 sm:p-5">
+          <div className="bg-white rounded-lg shadow-sm p-3 md:p-5">
             <h2 className="text-base sm:text-lg font-semibold text-red-600 mb-3 sm:mb-4 flex items-center gap-2">
               <AlertTriangle size={18} />
               Alertes consommation anormale
