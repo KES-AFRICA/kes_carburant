@@ -52,7 +52,7 @@ INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe, role_id, telephone, 
 VALUES (
   'ADMIN',
   'Super',
-  'admin@kescarburant.com',
+  'patrick.essame@kes-africa.com',
   '$2b$10$.vKc7eXZhEMl4ch.GFGjOu.Ho3GYb.y.E/ZXcRokwBvg2UB28ks4K',  -- hash de admin123
   1,
   '0102030405',
