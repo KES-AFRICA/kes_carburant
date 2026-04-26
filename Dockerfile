@@ -1,20 +1,15 @@
 # ── Étape 1 : dépendances ─────────────────────────────────────────────────
 FROM node:20-alpine AS deps
 WORKDIR /app
-
 COPY package.json package-lock.json* ./
 RUN npm ci
 
 # ── Étape 2 : build ──────────────────────────────────────────────────────
 FROM node:20-alpine AS builder
 WORKDIR /app
-
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Générer le client Prisma avant le build Next.js
 RUN npx prisma generate --schema=./prisma/schema.prisma
-
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
@@ -35,19 +30,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/public           ./public
 COPY --from=builder --chown=nextjs:nodejs /app/generated        ./generated
 COPY --from=builder --chown=nextjs:nodejs /app/prisma           ./prisma
 
-# ← AJOUTER CES DEUX LIGNES
+# ← COPIER node_modules ENTIERS du builder (pour prisma migrate deploy)
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules     ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/package.json     ./package.json
+
+# Entrypoint
 COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x ./docker-entrypoint.sh
-
-# Prisma CLI nécessaire pour migrate deploy au runtime
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.bin/prisma        ./node_modules/.bin/prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma            ./node_modules/@prisma
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules/prisma             ./node_modules/prisma
 
 USER nextjs
 EXPOSE 3000
 ENV PORT=3009
 ENV HOSTNAME="0.0.0.0"
-
-# ← REMPLACER CMD
 CMD ["./docker-entrypoint.sh"]
